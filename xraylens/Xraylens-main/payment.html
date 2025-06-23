@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - XrayLens</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+
+        .container {
+            max-width: 400px; /* Set a max width for the container */
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .btn-danger {
+            width: 100%;
+        }
+
+        /* Style for the input fields to limit width */
+        input.form-control {
+            max-width: 400px; /* Limit the max width of input fields */
+            margin: 0 auto; /* Center the input fields */
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">XrayLens</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="plans.html">Plans</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Payment Section -->
+    <div class="container text-center py-5">
+        <h2>Payment Confirmation</h2>
+        <p>Thank you for choosing XrayLens!</p>
+        <p>Your selected plan: <strong id="selected-plan"></strong></p>
+        <p>Please enter your payment details below:</p>
+        <form id="payment-form" novalidate>
+            <div class="mb-3">
+                <label for="card-name" class="form-label">Name on Card</label>
+                <input type="text" class="form-control" id="card-name" required placeholder="John Doe">
+                <div class="invalid-feedback">
+                    Please enter the name on the card.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="card-number" class="form-label">Card Number</label>
+                <input type="text" class="form-control" id="card-number" required pattern="\d{16}" placeholder="1234 5678 9012 3456">
+                <div class="invalid-feedback">
+                    Please enter a valid 16-digit card number.
+                </div>
+            </div>
+            <div class="mb-3">
+                    <label for="expiry" class="form-label">Expiry Date</label>
+                    <input type="text" class="form-control" id="expiry" required placeholder="MM/YY" pattern="(0[1-9]|1[0-2])\/\d{2}">
+                    <div class="invalid-feedback">
+                        Please enter a valid expiry date (MM/YY).
+                    </div>
+            </div>
+            <div class="mb-3">
+                    <label for="cvv" class="form-label">CVV</label>
+                    <input type="text" class="form-control" id="cvv" required pattern="\d{3}" placeholder="123">
+                    <div class="invalid-feedback">
+                        Please enter a valid 3-digit CVV.
+                    </div>
+            </div>
+            <button type="submit" class="btn btn-danger">Confirm Payment</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get the selected plan from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const plan = urlParams.get('plan');
+        document.getElementById('selected-plan').innerText = plan.charAt(0).toUpperCase() + plan.slice(1) + " Plan";
+
+        // Form validation
+        const paymentForm = document.getElementById('payment-form');
+        paymentForm.addEventListener('submit', function (event) {
+            // Prevent default submission
+            event.preventDefault();
+            // Check if the form is valid
+            if (paymentForm.checkValidity()) {
+                // If valid, show an alert (you can replace this with your payment processing logic)
+                alert('Payment confirmed for ' + plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan!');
+                // Optionally redirect to a confirmation page or handle payment logic here
+            } else {
+                // If invalid, show validation messages
+                paymentForm.classList.add('was-validated');
+            }
+        });
+    </script>
+</body>
+
+</html>

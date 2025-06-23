@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Hospitals in Hyderabad</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9e9e9;
+        }
+        .card {
+            border-radius: 10px;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+        #map {
+            height: 600px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h3 class="text-center mb-4 text-danger">Nearby Hospitals</h3>
+        <div id="map"></div>
+        <div class="row mt-4" id="hospital-list">
+            <!-- Hospital cards will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="hospitalModal" tabindex="-1" aria-labelledby="hospitalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hospitalModalLabel">Hospital Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 id="hospitalName"></h4>
+                    <p><strong>Address:</strong> <span id="hospitalAddress"></span></p>
+                    <p><strong>Contact:</strong> <span id="hospitalContact"></span></p>
+                    <p><strong>Distance:</strong> <span id="hospitalDistance"></span> km</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Include Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        // Hospital data (simulated)
+        const hospitals = [
+            {
+                name: "Apollo Hospital",
+                lat: 17.427435,
+                lng: 78.448288,
+                address: "6-3-853, Jubilee Hills, Hyderabad, Telangana 500033",
+                contact: "(040) 2360 7777"
+            },
+            {
+                name: "Care Hospitals",
+                lat: 17.423992,
+                lng: 78.429082,
+                address: "2-2-18, 3rd Floor, H.No.1-7-203, near Gachibowli, Hyderabad, Telangana 500032",
+                contact: "(040) 4444 4444"
+            },
+            {
+                name: "Yashoda Hospital",
+                lat: 17.421554,
+                lng: 78.460762,
+                address: "1-8-31, Raj Bhavan Road, Somajiguda, Hyderabad, Telangana 500082",
+                contact: "(040) 2331 3040"
+            }
+        ];
+
+        // Initialize map
+        const map = L.map('map').setView([17.385044, 78.486671], 12); // Default center
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Function to display hospitals on the map
+        function displayHospitals(userLat, userLng) {
+            function calculateDistance(lat1, lng1, lat2, lng2) {
+                const R = 6371; // Radius of Earth in km
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLng = (lng2 - lng1) * Math.PI / 180;
+                const a = 
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c;
+            }
+
+            const sortedHospitals = hospitals
+                .map(hospital => ({
+                    ...hospital,
+                    distance: calculateDistance(userLat, userLng, hospital.lat, hospital.lng)
+                }))
+                .sort((a, b) => a.distance - b.distance);
+
+            sortedHospitals.forEach(hospital => {
+                // Add marker
+                const marker = L.marker([hospital.lat, hospital.lng])
+                    .addTo(map)
+                    .bindPopup(`<b>${hospital.name}</b>`);
+
+                marker.on('click', () => showDetails(hospital));
+
+                // Add card
+                const card = `
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-dark">${hospital.name}</h5>
+                                <p><strong>Address:</strong> ${hospital.address}</p>
+                                <button class="btn btn-outline-primary" onclick="showDetails(${JSON.stringify(hospital).replace(/"/g, '&quot;')})">View Details</button>
+                            </div>
+                        </div>
+                    </div>`;
+                document.getElementById('hospital-list').insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+        // Show hospital details in modal
+        function showDetails(hospital) {
+            document.getElementById('hospitalName').textContent = hospital.name;
+            document.getElementById('hospitalAddress').textContent = hospital.address;
+            document.getElementById('hospitalContact').textContent = hospital.contact;
+            document.getElementById('hospitalDistance').textContent = hospital.distance.toFixed(2);
+            new bootstrap.Modal(document.getElementById('hospitalModal')).show();
+        }
+
+        // Get user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    map.setView([userLat, userLng], 14);
+                    L.marker([userLat, userLng])
+                        .addTo(map)
+                        .bindPopup("You are here")
+                        .openPopup();
+                    displayHospitals(userLat, userLng);
+                },
+                error => {
+                    alert("Unable to fetch your location. Please enable location services.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    </script>
+</body>
+</html>

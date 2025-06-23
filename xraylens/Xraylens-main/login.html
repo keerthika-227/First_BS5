@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - XrayLens</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #ff7f7f, #d32f2f); /* Light red to dark red */
+      color: white;
+    }
+    .card {
+      background-color: #fff;
+      color: #333;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .btn-primary {
+      background-color: #d32f2f;
+      border-color: #d32f2f;
+    }
+    .btn-primary:hover {
+      background-color: #b71c1c;
+      border-color: #b71c1c;
+    }
+    .form-control:focus {
+      box-shadow: 0 0 5px rgba(211, 47, 47, 0.8);
+      border-color: #d32f2f;
+    }
+    .text-danger {
+      color: #d32f2f !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card p-4" style="width: 100%; max-width: 400px;">
+      <h3 class="text-center text-danger mb-4">XrayLens Login</h3>
+      <form id="loginForm">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <div class="text-center mt-3">
+          <p>Don't have an account? <a href="register.html" class="text-danger">Register</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Handle login logic
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Check if the user exists in localStorage
+      const storedEmail = localStorage.getItem('userEmail');
+      const storedPassword = localStorage.getItem('userPassword');
+
+      if (email === storedEmail && password === storedPassword) {
+        alert('Login successful!');
+        window.location.href = 'index.html'; // Redirect to the homepage
+      } else {
+        alert('Invalid email or password. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>

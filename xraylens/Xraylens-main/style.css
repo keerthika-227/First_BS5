@@ -1,0 +1,33 @@
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Navbar styling */
+.navbar {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero section */
+#home {
+  background: linear-gradient(135deg, #f14e4e, #a5a5a6); /* Red gradient background */
+}
+
+/* Features icons */
+.fa-heartbeat, .fa-hospital, .fa-star {
+  transition: transform 0.3s;
+}
+
+.fa-heartbeat:hover, .fa-hospital:hover, .fa-star:hover {
+  transform: scale(1.2);
+}
+
+/* Footer */
+footer {
+  border-top: 3px solid #f14e4e; /* Red border */
+}
+
+/* Adjustments for alignment and spacing */
+#features .col-md-4 {
+  margin-bottom: 30px; /* Add some margin to ensure there is space between sections */
+}
